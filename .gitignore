@@ -1,0 +1,5 @@
+.virtualenv
+.idea
+.DS_Store
+*.pyc
+2.7
