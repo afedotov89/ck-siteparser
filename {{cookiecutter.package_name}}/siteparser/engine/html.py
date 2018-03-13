@@ -73,8 +73,12 @@ class HTMLConfig(object):
 
 class XPathTaker(object):
 
-    def __init__(self, xpath):
+    def __init__(self, xpath, strip=True):
         self.xpath = xpath
+        self.strip = strip
 
     def take(self, dom):
-        return dom.xpath_text(self.xpath)
+        text = dom.xpath_text(self.xpath)
+        if self.strip:
+            text = text.strip()
+        return text

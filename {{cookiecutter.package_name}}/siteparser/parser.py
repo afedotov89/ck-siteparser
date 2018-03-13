@@ -19,11 +19,11 @@ class Parser(object):
     def rss(self, url):
         engine = RSSEngine(self.config.rss)
         for entity_data in engine.process(url):
-            parser = self._clone()
+            parser = self.clone()
             parser.state.data.update(entity_data)
             yield parser
 
-    def _clone(self):
+    def clone(self):
         clone = self.__class__()
         clone.state = self.state.clone()
         clone.config = self.config
@@ -35,14 +35,14 @@ class Parser(object):
         return validators.url(url)
 
     def fetch(self, url):
-        parser = self._clone()
+        parser = self.clone()
         if not parser.html_engine:
             parser.html_engine = HTMLEngine(self.config.html)
         parser.dom = parser.html_engine.load_dom(url)
         return parser
 
     def html(self, source):
-        parser = self._clone()
+        parser = self.clone()
         if not parser.html_engine:
             parser.html_engine = HTMLEngine(self.config.html)
         if self._is_url(source):
@@ -52,17 +52,20 @@ class Parser(object):
         return parser
 
     def take(self, **fields):
-        parser = self._clone()
+        parser = self.clone()
         for field, taker in fields.items():
             parser.state.data[field] = self._taker(taker).take(self.dom)
         return parser
+
+    def exists(self, xpath):
+        return bool(len(self.dom.xpath(xpath)))
 
     def foreach(self, xpath):
         for item in self.dom.xpath(xpath):
             if isinstance(item, str):
                 yield item
             else:
-                parser = self._clone()
+                parser = self.clone()
                 parser.dom = item
                 yield parser
 
