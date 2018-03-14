@@ -49,6 +49,17 @@ class TestRSS(TestCase):
         )
         print(parser.document)
 
+    def test_get(self):
+        parser = Parser()
+        parser = parser.html('https://t.me/tvkinoradio/416?embed=1')
+        self.assertEquals(
+            parser.get('//div[@class="tgme_widget_message_link"]'),
+            't.me/tvkinoradio/416'
+        )
+        self.assertSequenceEqual(
+            parser.get_list('//div[@class="tgme_widget_message_text"]//a/@href'),
+            ['https://t.me/jump_cut', 'https://t.me/jump_cut']
+        )
 
     def test_exists(self):
         parser = Parser()

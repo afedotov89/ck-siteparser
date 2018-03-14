@@ -72,6 +72,9 @@ class Parser(object):
     def get(self, taker):
         return self._taker(taker).take(self.dom)
 
+    def get_list(self, taker):
+        return self._taker(taker).take_list(self.dom)
+
     def _taker(self, taker):
         if isinstance(taker, str):
             return XPathTaker(taker)

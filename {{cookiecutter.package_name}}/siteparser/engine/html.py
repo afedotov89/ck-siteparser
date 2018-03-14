@@ -29,6 +29,18 @@ class HTMLEngine(object):
                 item = item[0]
             else:
                 return ''
+            text = self._dom_item_to_text(item)
+            return text
+
+        def xpath_text_list(self, xpath):
+            items = self.root.xpath(xpath)
+            text_list = [
+                self._dom_item_to_text(item)
+                for item in items
+            ]
+            return text_list
+
+        def _dom_item_to_text(self, item):
             if isinstance(item, str):
                 text = item
             else:
@@ -82,3 +94,6 @@ class XPathTaker(object):
         if self.strip:
             text = text.strip()
         return text
+
+    def take_list(self, dom):
+        return dom.xpath_text_list(self.xpath)
