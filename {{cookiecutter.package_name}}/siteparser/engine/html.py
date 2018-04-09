@@ -8,9 +8,8 @@ from lxml import html, etree
 
 class HTMLEngine(object):
 
-    def __init__(self, config, request_headers=None):
+    def __init__(self, config):
         self.config = config
-        self.request_headers = request_headers or {}
 
     class DOM(object):
 
@@ -57,10 +56,11 @@ class HTMLEngine(object):
             return text
 
         def __str__(self):
-            return etree.tostring(self.root, pretty_print=True)
+            # FIXME hardcode encoding
+            return etree.tostring(self.root, pretty_print=True).decode('utf8')
 
     def load_dom(self, url):
-        r = requests.get(url, headers=self.request_headers)
+        r = requests.get(url, headers=self.config.request_headers, proxies=self.config.proxies)
         parser_kwargs = {}
         if 'charset' in r.headers.get('content-type') and r.encoding:
             parser_kwargs['encoding'] = r.encoding
@@ -79,8 +79,9 @@ class HTMLEngine(object):
 
 class HTMLConfig(object):
 
-    def __init__(self, request_headers=None):
+    def __init__(self, request_headers=None, proxies=None):
         self.request_headers = request_headers or {}
+        self.proxies = proxies or {}
 
 
 class XPathTaker(object):

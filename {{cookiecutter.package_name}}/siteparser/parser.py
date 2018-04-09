@@ -10,8 +10,12 @@ from urllib.parse import urlparse
 
 class Parser(object):
 
-    def __init__(self, config=None):
-        self.config = config or Config()
+    def __init__(self, user_agent='', proxies=None):
+        self.config = Config()
+        if user_agent:
+            self.config.html.request_headers['User-Agent'] = user_agent
+        if proxies:
+            self.config.html.proxies = proxies
         self.state = State()
         self.html_engine = None
         self.dom = None
@@ -83,6 +87,10 @@ class Parser(object):
     # def json(self, url):
     #     response = requests.get(url)
     #     return response.json()
+
+    @property
+    def source(self):
+        return str(self.dom)
 
     @property
     def document(self):
